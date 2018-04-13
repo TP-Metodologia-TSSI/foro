@@ -1,11 +1,10 @@
 
-function MensajePrivado(titulo, id, creador, fecha, contenido, recipiente) {
+function Respuesta(titulo, id, creador, fecha, contenido) {
     let titulo = titulo;
     let id = id;
     let creador = creador;
     let fecha = fecha;
     let contenido = contenido;
-    let recipiente = recipiente;
 
     this.getTitulo = function() {
         return this.titulo;
@@ -21,8 +20,5 @@ function MensajePrivado(titulo, id, creador, fecha, contenido, recipiente) {
     }
     this.getContenido = function() {
         return this.contenido;
-    }
-    this.getRecipiente = function() {
-        return this.recipiente;
     }
 }
