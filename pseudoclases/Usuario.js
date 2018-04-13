@@ -1,12 +1,13 @@
 
 
 
-function Usuario(nombre, id, urlImagen, admin, status) {
+function Usuario(nombre, id, urlImagen, admin, status, amigos) {
     let nombre = nombre;
     let id = id;
     let urlImagen = urlImagen;
     let administrador = admin;
     let status = status;
+    let amigos = amigos;
 
     this.getNombre = function() {
         return this.nombre;
