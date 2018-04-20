@@ -1,13 +1,12 @@
 {
   "private": true,
   "version": "1.0.0-65",
-  "name": "Skeleton",
-  "company": "Skeleton, Inc.",
-  "subdomain": "skeleton-app",
-  "description": "A friendly node and express framework",
-  "author": "Dan Stroot",
+  "name": "Foro-TSSI",
+  "company": "Grupo",
+  "subdomain": "foro-app",
+  "description": "Foro temático",
   "keywords": [
-    "skeleton",
+    "foro",
     "node",
     "express",
     "passport",
@@ -15,12 +14,10 @@
     "fontawesome",
     "framework"
   ],
-  "homepage": "http://skeleton-app.jit.su",
   "repository": {
     "type": "git",
     "url": "https://github.com/dstroot/skeleton.git"
   },
-  "bugs": "https://github.com/dstroot/skeleton/issues",
   "contributors": "https://github.com/dstroot/skeleton/graphs/contributors",
   "licenses": [
     {
@@ -60,7 +57,6 @@
     "lodash": "^3.10.1",
     "method-override": "^2.3.5",
     "moment": "^2.10.6",
-    "mongoose": "^4.1.5",
     "morgan": "^1.6.1",
     "node-foursquare": "~0.3.0",
     "nodemailer": "~1.3.2",

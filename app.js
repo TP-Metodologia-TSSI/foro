@@ -479,29 +479,28 @@ db.on('error', function () {
 });
 
 db.on('open', function () {
-  debug('Mongodb ' + 'connected!'.green.bold);
+  debug('Mongodb ' + 'connected!');
 
   // "server.listen" for socket.io
   server.listen(app.get('port'), function () {
 
     // Test for correct node version as spec'ed in package.info
     if (!semver.satisfies(process.versions.node, config.engine)) {
-      debug('Error: unsupported version of Node or io.js!'.red.bold);
-      debug(config.name.red.bold + ' needs Node or io.js version '.red.bold + config.engine.red.bold);
+      debug('Error: unsupported version of Node or io.js!');
+      debug(config.name + ' needs Node or io.js version ' + config.engine);
       process.exit(0);
     }
 
     // Log how we are running
-    debug('listening on port ' + app.get('port').toString().green.bold);
-    debug('listening in ' + app.settings.env.green.bold + ' mode.');
-    debug('Ctrl+C'.green.bold + ' to shut down. ;)');
+    debug('listening on port ' + app.get('port').toString());
+    debug('Ctrl+C' + ' to shut down. ;)');
 
     // Exit cleanly on Ctrl+C
     process.on('SIGINT', function () {
       io.close();  // close socket.io
       console.log('\n');
-      debug('has ' + 'shutdown'.green.bold);
-      debug('was running for ' + Math.round(process.uptime()).toString().green.bold + ' seconds.');
+      debug('has ' + 'shutdown');
+      debug('was running for ' + Math.round(process.uptime()).toString() + ' seconds.');
       process.exit(0);
     });
   });
