@@ -1,5 +1,0 @@
-{
-	"brand": "http://localhost:8085/api/brand",
-	"category": "http://localhost:8085/api/category",
-	"subcategory": "http://localhost:8085/api/subcategory"
-}
