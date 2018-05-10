@@ -1,25 +1,22 @@
 package com.metodologia.foro.utils;
 
-import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
+import org.apache.logging.log4j.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.metodologia.foro.entities.Usuario;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
-/**
- * Created by pablo on 01/11/16.
- */
 @Service
 public class SessionData {
-
-    static final  Logger LOGGER = Logger.getLogger(SessionData.class);
+    static final Logger LOGGER = LogManager.getLogger(SessionData.class);
     private HashMap<String, AuthenticationData> sessionData;
 
     @Value("${session.expiration}")
@@ -59,13 +56,12 @@ public class SessionData {
         Set<String> sessionsId = this.sessionData.keySet();
         for (String sessionId : sessionsId) {
             AuthenticationData aData = this.sessionData.get(sessionId);
-            if (aData.getLastAction().plusSeconds(expirationTime).
-                    isBefore(System.currentTimeMillis())) {
+            if (aData.getLastAction().
+                    before(Date.from(LocalDateTime.ofInstant(new Date().toInstant().minusSeconds(expirationTime), ZoneId.systemDefault()).toInstant(null)))) {
                 System.out.println("Deleting sessionId = " + sessionId);
                 this.sessionData.remove(sessionId);
             }
         }
     }
-
 }
 

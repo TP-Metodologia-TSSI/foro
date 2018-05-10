@@ -1,42 +1,41 @@
 package com.metodologia.foro.persistence;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
+import com.metodologia.foro.entities.Respuesta;
 import com.metodologia.foro.entities.Usuario;
 
-import java.util.List;
-
-@Repository
-public class UsuarioDao extends AbstractDao<Usuario> {
+public class RespuestaDao extends AbstractDao<Respuesta> {
 	@Autowired
-	public UsuarioDao(SessionFactory sessionFactory) {
+	public RespuestaDao(SessionFactory sessionFactory) {
 		super(sessionFactory);
 	}
 
 	@Override
-	public List<Usuario> getAll() {
+	public List<Respuesta> getAll() {
 		Session session = this.sessionFactory.openSession();
-		List<Usuario> list = session.createQuery("FROM usuarios").list();
+		List<Respuesta> list = session.createQuery("FROM respuestas").list();
 		session.close();
 
 		return list;
 	}
 
 	@Override
-	Usuario getById(int id) {
+	Respuesta getById(int id) {
 		Session session = this.sessionFactory.openSession();
-		Usuario usuario = (Usuario) session.createQuery("FROM usuarios where id = :i").setParameter("i", id).list()
+		Respuesta respuesta = (Respuesta) session.createQuery("FROM respuestas where id = :i").setParameter("i", id).list()
 				.get(0);
 		session.close();
 
-		return usuario;
+		return respuesta;
 	}
 
 	@Override
-	void save(Usuario value) {
+	void save(Respuesta value) {
 		Session session = this.sessionFactory.openSession();
 		session.beginTransaction();
 

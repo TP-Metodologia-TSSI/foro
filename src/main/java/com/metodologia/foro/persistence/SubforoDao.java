@@ -1,42 +1,39 @@
 package com.metodologia.foro.persistence;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
-import com.metodologia.foro.entities.Usuario;
+import com.metodologia.foro.entities.Subforo;
 
-import java.util.List;
-
-@Repository
-public class UsuarioDao extends AbstractDao<Usuario> {
+public class SubforoDao extends AbstractDao<Subforo> {
 	@Autowired
-	public UsuarioDao(SessionFactory sessionFactory) {
+	public SubforoDao(SessionFactory sessionFactory) {
 		super(sessionFactory);
 	}
 
 	@Override
-	public List<Usuario> getAll() {
+	List<Subforo> getAll() {
 		Session session = this.sessionFactory.openSession();
-		List<Usuario> list = session.createQuery("FROM usuarios").list();
+		List<Subforo> list = session.createQuery("FROM subforos").list();
 		session.close();
 
 		return list;
 	}
 
 	@Override
-	Usuario getById(int id) {
+	Subforo getById(int id) {
 		Session session = this.sessionFactory.openSession();
-		Usuario usuario = (Usuario) session.createQuery("FROM usuarios where id = :i").setParameter("i", id).list()
+		Subforo subforo = (Subforo) session.createQuery("FROM subforos where id = :i").setParameter("i", id).list()
 				.get(0);
 		session.close();
 
-		return usuario;
+		return subforo;
 	}
 
 	@Override
-	void save(Usuario value) {
+	void save(Subforo value) {
 		Session session = this.sessionFactory.openSession();
 		session.beginTransaction();
 
@@ -44,4 +41,5 @@ public class UsuarioDao extends AbstractDao<Usuario> {
 
 		session.close();
 	}
+
 }

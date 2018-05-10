@@ -1,13 +1,9 @@
 package com.metodologia.foro.utils;
 
 import java.util.Date;
-
-import org.joda.time.DateTime;
-
 import com.metodologia.foro.entities.Usuario;
 
 public class AuthenticationData {
-
     private Usuario usuario;
     private Date lastAction;
 
