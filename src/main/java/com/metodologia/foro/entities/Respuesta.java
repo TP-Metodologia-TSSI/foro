@@ -46,4 +46,12 @@ public class Respuesta {
     public Tema getTema() {
     	return tema;
     }
+
+    @ManyToOne
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
+    
+    public Usuario getUsuario() {
+    	return usuario;
+    }
 }
