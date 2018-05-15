@@ -13,11 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(
-    value = "/",
+    value = "/usuario",
     produces = MediaType.APPLICATION_JSON_VALUE
 )
 public class UsuarioController {
-
     private UsuarioService usuarioService;
 
     private SessionData sessionData;
@@ -43,5 +42,4 @@ public class UsuarioController {
           sessionData.removeSession(sessionId);
           return new ResponseEntity(HttpStatus.ACCEPTED);
     }
-
 }

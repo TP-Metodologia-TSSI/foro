@@ -14,7 +14,7 @@ public class SubforoDao extends AbstractDao<Subforo> {
 	}
 
 	@Override
-	List<Subforo> getAll() {
+	public List<Subforo> getAll() {
 		Session session = this.sessionFactory.openSession();
 		List<Subforo> list = session.createQuery("FROM subforos").list();
 		session.close();

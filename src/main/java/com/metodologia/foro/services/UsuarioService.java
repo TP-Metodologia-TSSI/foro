@@ -10,15 +10,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UsuarioService {
-    UsuarioDao usuarioDao;
+    UsuarioDao dao;
 
     @Autowired
     public UsuarioService(UsuarioDao dao) {
-        this.usuarioDao = dao;
+        this.dao = dao;
     }
 
     public Usuario login(String nombreUsuario, String password) {
-    	List<Usuario> usuarios = usuarioDao.getAll();
+    	List<Usuario> usuarios = dao.getAll();
     	
     	for (Usuario u : usuarios) {
     		if (u.getNombreUsuario() == nombreUsuario && u.getPassword() == password) {

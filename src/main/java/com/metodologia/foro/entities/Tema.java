@@ -43,8 +43,16 @@ public class Tema {
     @ManyToOne
     @JoinColumn(name = "id_subforo")
     private Subforo subforo;
+    
+    public Subforo getSubforo() {
+    	return subforo;
+    }
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
+    
+    public Usuario getUsuario() {
+    	return usuario;
+    }
 }
