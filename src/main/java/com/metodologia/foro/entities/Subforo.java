@@ -43,7 +43,7 @@ public class Subforo {
     }
 
     @Column(name = "fecha", nullable = false)
-    public Date getFechaSubscripcion() {
+    public Date getFecha() {
         return fecha;
     }
 }

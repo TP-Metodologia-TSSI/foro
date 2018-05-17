@@ -36,7 +36,7 @@ public class Tema {
     }
 
     @Column(name = "fecha", nullable = false)
-    public Date getFechaSubscripcion() {
+    public Date getFecha() {
         return fecha;
     }
 

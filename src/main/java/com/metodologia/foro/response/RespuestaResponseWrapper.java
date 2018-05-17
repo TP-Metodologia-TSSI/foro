@@ -8,7 +8,7 @@ public class RespuestaResponseWrapper {
 	@JsonProperty
     private int id;
 	@JsonProperty
-    private int id_usuario;
+    private String nombre_usuario;
 	@JsonProperty
     private int id_tema;
 	@JsonProperty
@@ -16,9 +16,9 @@ public class RespuestaResponseWrapper {
 	@JsonProperty
     private Date fecha;
 
-    public RespuestaResponseWrapper(int id, int id_usuario, int id_tema, String contenido, Date fecha) {
+    public RespuestaResponseWrapper(int id, String nombre_usuario, int id_tema, String contenido, Date fecha) {
     	this.id = id;
-    	this.id_usuario = id_usuario;
+    	this.nombre_usuario = nombre_usuario;
     	this.id_tema = id_tema;
     	this.contenido = contenido;
     	this.fecha = fecha;
@@ -32,12 +32,12 @@ public class RespuestaResponseWrapper {
 		this.id = id;
 	}
 
-	public int getId_usuario() {
-		return id_usuario;
+	public String getId_usuario() {
+		return nombre_usuario;
 	}
 
-	public void setId_usuario(int id_usuario) {
-		this.id_usuario = id_usuario;
+	public void setId_usuario(String nombre_usuario) {
+		this.nombre_usuario = nombre_usuario;
 	}
 
 	public int getId_tema() {

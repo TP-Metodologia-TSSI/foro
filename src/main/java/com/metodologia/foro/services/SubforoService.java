@@ -16,7 +16,7 @@ public class SubforoService {
         this.dao = dao;
     }
 
-    public ArrayList<Subforo> getAll(int idTema) {
+    public ArrayList<Subforo> getAll() {
     	List<Subforo> subforos = dao.getAll();
     	ArrayList<Subforo> arraylistSubforos = new ArrayList();
     	
