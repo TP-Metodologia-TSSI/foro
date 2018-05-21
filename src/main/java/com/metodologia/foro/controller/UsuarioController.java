@@ -1,45 +1,73 @@
 package com.metodologia.foro.controller;
 
-import com.metodologia.foro.entities.Usuario;
-import com.metodologia.foro.response.LoginResponseWrapper;
-import com.metodologia.foro.services.UsuarioService;
-import com.metodologia.foro.utils.SessionData;
+import com.metodologia.foro.ForoApplication;
+import com.metodologia.foro.model.Usuario;
+import com.metodologia.foro.persistence.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.jws.WebParam;
 
 @RestController
-@RequestMapping(
-    value = "/usuario",
-    produces = MediaType.APPLICATION_JSON_VALUE
-)
+@RequestMapping(value = "/usuario")
 public class UsuarioController {
-    private UsuarioService usuarioService;
-
-    private SessionData sessionData;
 
     @Autowired
-    public UsuarioController(UsuarioService usuarioService, SessionData sessionData) {
-        this.usuarioService = usuarioService;
-        this.sessionData = sessionData;
+    private UsuarioRepository usuarioRepository;
+
+    @GetMapping(value = "/login.html")
+    public ModelAndView loginView() {
+        ModelAndView modelAndView = new ModelAndView("/usuario/login");
+        return modelAndView;
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<LoginResponseWrapper> getById(@RequestParam("user") String nombreUsuario, @RequestParam("pwd") String pwd) {
-        Usuario u = usuarioService.login(nombreUsuario, pwd);
-        if (null != u) {
-            String sessionId = sessionData.addSession(u);
-            return new ResponseEntity<LoginResponseWrapper>(new LoginResponseWrapper(sessionId), HttpStatus.OK);
+    @GetMapping(value = "/register.html")
+    public ModelAndView registerView() {
+        ModelAndView modelAndView = new ModelAndView("/usuario/register");
+        return modelAndView;
+    }
+
+    @PostMapping(value = "/login")
+    public ModelAndView login(String nombre, String password) {
+
+        ModelAndView modelAndView = new ModelAndView("redirect:/usuario/login.html");
+
+        Usuario usuario = null;
+        usuario = this.usuarioRepository.findByName(nombre);
+
+        if(usuario != null && usuario.getPassword().equals(password)) {
+            ForoApplication.usuarioLogeado = usuario;
+            modelAndView.setViewName("redirect:/index.html");
         }
-        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+
+        return modelAndView;
     }
 
-    @RequestMapping("/logout")
-    public @ResponseBody ResponseEntity getById(@RequestHeader("sessionid") String sessionId) {
-          sessionData.removeSession(sessionId);
-          return new ResponseEntity(HttpStatus.ACCEPTED);
+    @PostMapping(value = "/register")
+    public ModelAndView register(String name, String email, String password) {
+
+        ModelAndView modelAndView = new ModelAndView("redirect:/usuario/register.html");
+
+        if( name != null && !(name.trim().equals("")) &&
+            password != null && !(password.trim().equals(""))) {
+
+            Usuario usuario = new Usuario(name, password,"");
+            this.usuarioRepository.save(usuario);
+            modelAndView.setViewName("redirect:/usuario/login.html");
+        }
+
+        return modelAndView;
+    }
+
+    @GetMapping(value = "/logout")
+    public ModelAndView logout() {
+
+        if(ForoApplication.usuarioLogeado != null) {
+            ForoApplication.usuarioLogeado = null;
+        }
+
+        return new ModelAndView("redirect:/index.html");
     }
 }

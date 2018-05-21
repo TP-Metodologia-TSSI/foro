@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.springframework.org/schema/data/jaxb">
+<head>
+    <title>Foro Temático</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/bootstrap.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/my-login.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/styles.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/font-awesome.css}">
+
+    <script th:src="@{/JS/JQuery.js}"></script>
+</head>
+
+<body class="bg-light position-relative min-h-100">
+
+    <nav id="mainNavbar" class="navbar navbar-dark bg-primary eliminarSeleccion">
+
+        <a class="navbar-brand btn-color-primary fx" href="/index.html">Inicio</a>
+
+        <form class="form-inline">
+            <input class="form-control mr-sm-2" type="search" placeholder="No tiene funcionalidad" aria-label="Search">
+            <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
+            <a href="/usuario/login.html" class="btn-color-primary ml-2 my-2 my-sm-0 fx">
+                <i class="fa fa-user-circle-o fa-2x" aria-hidden="true"></i>
+            </a>
+        </form>
+
+    </nav>
+
+    <div class="my-login-page">
+        <section class="h-100">
+            <div class="container h-100">
+                <div class="row justify-content-md-center h-100">
+                    <div class="card-wrapper">
+                        <div class="brand">
+                            <img th:src="@{/images/logo.jpg}">
+                        </div>
+                        <div class="card fat">
+                            <div class="card-body">
+                                <h4 class="card-title">Login</h4>
+                                <form method="POST" action="/usuario/login">
+
+                                    <div class="form-group">
+                                        <label for="nombre">Nombre</label>
+                                        <input id="nombre" type="text" class="form-control" name="nombre" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="password">Password
+                                            <a href="forgot.html" class="float-right">
+                                                No recordás tu password?
+                                            </a>
+                                        </label>
+                                        <input id="password" type="password" class="form-control" name="password" required>
+                                    </div>
+
+                                    <div class="form-group no-margin">
+                                        <button type="submit" class="btn btn-primary btn-block">
+                                            Login
+                                        </button>
+                                    </div>
+                                    <div class="margin-top20 text-center">
+                                        No tenés cuenta? <a href="/usuario/register.html">Crear una</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="footer">
+                            Foro
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer id="mainFooter" class="bg-primary font-color-primary eliminarSeleccion p-4 footer">
+
+        <p class="m-0">
+            Foro Temático - Metodología de Investigación II - <a class="btn-color-primary" href="http://www.mdp.utn.edu.ar/">UTN - MDP</a>
+        </p>
+
+    </footer>
+
+<script src="@{/JS/Popper.js}"></script>
+<script src="@{/JS/bootstrap.js}"></script>
+<script src="@{/JS/miScript.js}"></script>
+
+</body>
+</html>

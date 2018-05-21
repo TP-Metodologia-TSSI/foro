@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.springframework.org/schema/data/jaxb">
+<head>
+    <title>Foro Temático</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/bootstrap.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/styles.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/font-awesome.css}">
+
+    <script th:src="@{/JS/JQuery.js}"></script>
+</head>
+
+<body class="bg-light position-relative min-h-100">
+
+<nav id="mainNavbar" class="navbar navbar-dark bg-primary eliminarSeleccion">
+
+    <a class="navbar-brand btn-color-primary fx" href="/index.html">Inicio</a>
+
+    <form class="form-inline">
+        <input class="form-control mr-sm-2" type="search" placeholder="No tiene funcionalidad" aria-label="Search">
+        <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
+        <a href="/usuario/login.html" class="btn-color-primary ml-2 my-2 my-sm-0 fx">
+            <i class="fa fa-user-circle-o fa-2x" aria-hidden="true"></i>
+        </a>
+    </form>
+
+</nav>
+
+<section class="container">
+
+    <article id="temaPrincipal" class="my-3">
+
+        <div class="row">
+
+            <section class="col-8 col-md-10 bg-white border-hr rounded">
+
+                <header class="border-bottom-hr py-2">
+                    <td>
+                        <h3 class="d-inline" th:text="${tema.titulo}">Título del tema</h3>
+                    </td>
+                    <a href="#responderTema" class="btn btn-success pull-right">Responder</a>
+                </header>
+
+                <td>
+                    <article class="messageContainer" th:text="${tema.contenido}">Descripción...</article>
+                </td>
+            </section>
+
+            <aside class="col-4 col-md-2 text-center">
+                <div class="bg-white border-hr rounded h-auto">
+                    <header class="py-4">
+                        <i class="fa fa-user-circle-o fa-4x" aria-hidden="true"></i>
+                    </header>
+
+                    <ul class="listStyleNone">
+                        <li>
+                            <td>Post created on<label th:text="${tema.fechaCreacion}">...</label></td>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+
+    </article>
+
+    <tr th:each="respuesta : ${respuestaList}">
+        <article class="media my-3">
+            <section class="media-body p-4 bg-white border-hr rounded">
+                <td><article class="messageContainer" th:text="${respuesta.contenido}">Respuesta...</article></td>
+            </section>
+
+            <aside class="align-self-center text-center border-left-hr py-2 px-4 ml-3 bg-white border-hr rounded">
+                <header class="mb-1">
+                    <i class="fa fa-user-circle-o fa-4x" aria-hidden="true"></i>
+                </header>
+
+                <ul class="listStyleNone">
+                    <li>
+                        <td><label th:text="${respuesta.id_creador}">User name</label></td>
+                    </li>
+                    <li>
+                        <td>Post created on <label th:text="${respuesta.fechaCreacion}">...</label></td>
+                    </li>
+                </ul>
+            </aside>
+        </article>
+    </tr>
+
+    <td>
+        <article id="responderTema">
+            <header>
+                <h3>Redactá tu respuesta...</h3>
+            </header>
+            <form action="/respuesta/add" method="POST">
+                <td><input type="text" name="id_tema" th:value="${tema.id_tema}" style="display: none;"></td>
+                <textarea name="contenido" class="form-control" rows="5"></textarea>
+                <div class="my-2 text-right">
+                    <td>
+                        <input type="submit" name="btnSendRepuestaTema" class="btn btn-success" value="Enviar" th:if="${usuarioLoged.tipoUsuario}>0">
+                    </td>
+                    <td>
+                        <input type="submit" name="btnSendRepuestaTema" class="btn btn-success" value="Enviar" th:if="${usuarioLoged.tipoUsuario}==0" disabled="true">
+                    </td>
+                </div>
+            </form>
+        </article>
+    </td>
+</section>
+<footer id="mainFooter" class="bg-primary font-color-primary eliminarSeleccion p-4 footer">
+
+    <p class="m-0">
+        Foro Temático - Metodología de Investigación II - <a class="btn-color-primary" href="http://www.mdp.utn.edu.ar/">UTN - MDP</a>
+    </p>
+
+</footer>
+
+<script src="@{/JS/Popper.js}"></script>
+<script src="@{/JS/bootstrap.js}"></script>
+<script src="@{/JS/miScript.js}"></script>
+
+</body>
+</html>
