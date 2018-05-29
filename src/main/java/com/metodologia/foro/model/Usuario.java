@@ -3,6 +3,8 @@ package com.metodologia.foro.model;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity

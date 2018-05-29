@@ -1,13 +1,12 @@
 package com.metodologia.foro.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.metodologia.foro.ForoApplication;
 import com.metodologia.foro.model.Subforo;
 import com.metodologia.foro.model.Tema;
 import com.metodologia.foro.persistence.SubforoRepository;
 import com.metodologia.foro.persistence.TemaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
