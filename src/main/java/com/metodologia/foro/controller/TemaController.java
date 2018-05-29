@@ -1,43 +1,95 @@
 package com.metodologia.foro.controller;
 
+import com.metodologia.foro.ForoApplication;
+import com.metodologia.foro.model.Respuesta;
+import com.metodologia.foro.model.Subforo;
+import com.metodologia.foro.model.Tema;
+import com.metodologia.foro.persistence.RespuestaRepository;
+import com.metodologia.foro.persistence.SubforoRepository;
+import com.metodologia.foro.persistence.TemaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
-import com.metodologia.foro.entities.Tema;
-import com.metodologia.foro.response.LoginResponseWrapper;
-import com.metodologia.foro.utils.SessionData;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping(
-    value = "/tema",
-    produces = MediaType.APPLICATION_JSON_VALUE
-)
-
+@RequestMapping(value = "/tema")
 public class TemaController {
-	private TemaService temaService;
 
-    private SessionData sessionData;
+    @Autowired
+    private TemaRepository temaRepository;
 
-	@Autowired
-	public TemaController(TemaService temaService, SessionData sessionData) {
-        this.temaService = temaService;
-        this.sessionData = sessionData;
-	}
+    @Autowired
+    private RespuestaRepository respuestaRepository;
 
-	@RequestMapping("/")
-    public @ResponseBody ResponseEntity<TemaResponseWrapper> getById(@RequestParam("id") Integer id) {
-        Tema t = temaService.getTema(id);
-        if (null != t) {
-            String sessionId = sessionData.addSession(t);
-            return new ResponseEntity<TemResponseWrapper>(new TemaResponseWrapper(sessionId), HttpStatus.OK);
+    @Autowired
+    private SubforoRepository subforoRepository;
+
+
+    @GetMapping(value = "/{titulo}")
+    public Object index(@PathVariable("titulo") String titulo){
+
+        Object destino = "redirect:/subforo/index.html";
+        Optional<Tema> temaOptional = this.temaRepository.findByTitulo(titulo);
+
+        if(temaOptional.isPresent()) {
+            Tema tema = temaOptional.get();
+            List<Respuesta> respuestaList = this.respuestaRepository.findByTema(tema.getId_tema());
+
+            Object user = "null";
+            if(ForoApplication.usuarioLogeado != null) user = ForoApplication.usuarioLogeado;
+
+            ModelAndView modelAndView = new ModelAndView("/tema/respuesta");
+            modelAndView.addObject("tema", tema);
+            modelAndView.addObject("respuestaList", respuestaList);
+            modelAndView.addObject("usuarioLoged", user);
+
+            destino = modelAndView;
         }
-        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-	}
+
+        return destino;
+    }
+
+    @PostMapping(value = "/add.html")
+    public Object addView(String nombreSubforo) {
+
+        Object destino = "redirect:/index.html";
+
+        if(ForoApplication.usuarioLogeado != null) {
+
+            Optional<Subforo> subforoOptional = this.subforoRepository.findByTitulo(nombreSubforo);
+
+            if (subforoOptional.isPresent()) {
+                Subforo subforo = subforoOptional.get();
+
+                ModelAndView modelAndView = new ModelAndView("/subforo/index");
+                modelAndView.setViewName("/tema/alta");
+                modelAndView.addObject("id_subforo", subforo.getId());
+
+                destino = modelAndView;
+            }
+        }
+
+        return destino;
+    }
+
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public ModelAndView add(long id_Subforo, String titulo, String contenido) {
+
+        if(ForoApplication.usuarioLogeado != null) {
+
+            if( id_Subforo > 0 &&
+                ForoApplication.usuarioLogeado.getId() > 0 &&
+                titulo != null && !(titulo.trim().equals("")) &&
+                contenido != null && !(contenido.trim().equals(""))) {
+
+                Tema tema = new Tema(titulo, contenido, ForoApplication.usuarioLogeado.getId(), id_Subforo);
+                this.temaRepository.save(tema);
+            }
+        }
+
+        return new ModelAndView("redirect:/index.html");
+    }
 }

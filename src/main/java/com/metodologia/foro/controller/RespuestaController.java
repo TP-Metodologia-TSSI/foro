@@ -1,38 +1,46 @@
 package com.metodologia.foro.controller;
 
+import com.metodologia.foro.ForoApplication;
+import com.metodologia.foro.model.Respuesta;
+import com.metodologia.foro.model.Tema;
+import com.metodologia.foro.persistence.RespuestaRepository;
+import com.metodologia.foro.persistence.TemaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import sun.misc.Request;
 
-import com.metodologia.foro.entities.Respuesta;
-import com.metodologia.foro.response.RespuestaResponseWrapper;
-import com.metodologia.foro.services.RespuestaService;
+import java.util.Optional;
 
 @RestController
-@RequestMapping(
-    value = "/respuesta",
-    produces = MediaType.APPLICATION_JSON_VALUE
-)
+@RequestMapping(value = "/respuesta")
 public class RespuestaController {
-	private RespuestaService respuestaService;
 
     @Autowired
-    public RespuestaController(RespuestaService respuestaService) {
-        this.respuestaService = respuestaService;
-    }
+    private RespuestaRepository respuestaRepository;
 
-    @RequestMapping("/")
-    public @ResponseBody ResponseEntity<RespuestaResponseWrapper> getById(@RequestParam("id") Integer id) {
-        Respuesta r = respuestaService.getRespuesta(id);
-        if (null != r) {
-            return new ResponseEntity<RespuestaResponseWrapper>(new RespuestaResponseWrapper(r.getId(), r.getUsuario().getNombreUsuario(), r.getTema().getId(), r.getContenido(), r.getFecha()), HttpStatus.OK);
+    @Autowired
+    private TemaRepository temaRepository;
+
+    @PostMapping(value = "/add")
+    public ModelAndView add(String id_tema, String contenido) {
+        Optional<Tema> temaOptional = null;
+        Tema tema = null;
+
+        if(ForoApplication.usuarioLogeado != null) {
+
+            if( Long.parseLong(id_tema) > 0 &&
+                contenido != null && !(contenido.trim().equals(""))) {
+                temaOptional = this.temaRepository.findById(Long.parseLong(id_tema));
+
+                if(temaOptional.isPresent()) {
+                    tema = temaOptional.get();
+                    Respuesta respuesta = new Respuesta(contenido, ForoApplication.usuarioLogeado.getId(), Long.parseLong(id_tema));
+                    this.respuestaRepository.save(respuesta);
+                }
+            }
         }
-        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+
+        return new ModelAndView("redirect:/index.html");
     }
 }

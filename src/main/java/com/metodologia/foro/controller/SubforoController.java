@@ -1,45 +1,79 @@
 package com.metodologia.foro.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.metodologia.foro.entities.Subforo;
-import com.metodologia.foro.response.LoginResponseWrapper;
-import com.metodologia.foro.utils.SessionData;
+import com.metodologia.foro.ForoApplication;
+import com.metodologia.foro.model.Subforo;
+import com.metodologia.foro.model.Tema;
+import com.metodologia.foro.persistence.SubforoRepository;
+import com.metodologia.foro.persistence.TemaRepository;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping(
-    value = "/subforo",
-    produces = MediaType.APPLICATION_JSON_VALUE
-)
-
+@RequestMapping(value = "/subforo")
 public class SubforoController {
 
-	private SubforoService SubforoService;
+    @Autowired
+    private SubforoRepository subforoRepository;
 
-	private SessionData sessionData;
+    @Autowired
+    private TemaRepository temaRepository;
 
-	@Autowired
-	public SubforoController(SubforoService subforoService, SessionData sessionData) {
-        this.subforoService = subforoService;
-        this.sessionData = sessionData;
-	}
 
-	@RequestMapping("/")
-	public @ResponseBody ResponseEntity<SubforoResponseWrapper> getById(@RequestParam("id") Integer id) {
-		Subforo s = subforoService.getSubforo(id);
-		if (null != s) {
-            String sessionId = sessionData.addSession(s);
-            return new ResponseEntity<SubforoResponseWrapper>(new subforoResponseWrapper(sessionId), HttpStatus.OK);
-		}
-		return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-	}
+    @GetMapping(value = "/{titulo}")
+    public Object index(@PathVariable("titulo") String titulo){
 
+        Object destino = "redirect:/index.html";
+        Optional<Subforo> subforoOptional= this.subforoRepository.findByTitulo(titulo);
+
+        if(subforoOptional.isPresent()) {
+
+            Subforo subforo = subforoOptional.get();
+            List<Tema> temaList = this.temaRepository.findBySubforo(subforo.getId());
+
+            Object user = "null";
+            if(ForoApplication.usuarioLogeado != null) user = ForoApplication.usuarioLogeado;
+
+            ModelAndView modelAndView = new ModelAndView("/tema/index");
+            modelAndView.addObject("temaList", temaList);
+            modelAndView.addObject("tituloSubforo", titulo);
+            modelAndView.addObject("usuarioLoged", user);
+
+            destino = modelAndView;
+        }
+
+        return destino;
+    }
+
+    @GetMapping(value = "/add.html")
+    public Object addView() {
+        Object destino = "redirect:/index.html";
+
+        if(ForoApplication.usuarioLogeado != null && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
+            ModelAndView modelAndView = new ModelAndView("/subforo/index");
+            modelAndView.setViewName("/subforo/alta");
+
+            destino = modelAndView;
+        }
+
+        return destino;
+    }
+
+    @PostMapping(value = "/add")
+    public ModelAndView add(String titulo){
+
+        if(ForoApplication.usuarioLogeado != null && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
+
+            if(titulo != null && !(titulo.trim().equals(""))) {
+                Subforo subforo = new Subforo(titulo);
+                this.subforoRepository.save(subforo);
+            }
+        }
+        return new ModelAndView("redirect:/index.html");
+    }
 }

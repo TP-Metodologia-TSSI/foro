@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.springframework.org/schema/data/jaxb">
+<head>
+    <title>Foro Temático</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/bootstrap.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/styles.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/font-awesome.css}">
+
+    <script th:src="@{/JS/JQuery.js}"></script>
+</head>
+
+<body class="bg-light position-relative min-h-100">
+
+<nav id="mainNavbar" class="navbar navbar-dark bg-primary eliminarSeleccion">
+
+    <a class="navbar-brand btn-color-primary fx" href="/index.html">Inicio</a>
+
+    <form class="form-inline">
+        <input class="form-control mr-sm-2" type="search" placeholder="No tiene funcionalidad" aria-label="Search">
+        <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
+        <a href="/usuario/login.html" class="btn-color-primary ml-2 my-2 my-sm-0 fx">
+            <i class="fa fa-user-circle-o fa-2x" aria-hidden="true"></i>
+        </a>
+    </form>
+
+</nav>
+
+<header class="bg-white border border-bottom-dark">
+    <div class="container py-3">
+        <td>
+            <h1 class="h1 text-center" th:text="${tituloSubforo}">Nombre Sub-Foro</h1>
+            <td>
+                <form action="/tema/add.html" method="POST" class="text-center pt-4" th:if="${usuarioLoged.tipoUsuario}!=0">
+                    <td><input type="text" id="nombreSubforo" name="nombreSubforo" th:value="${tituloSubforo}" style="display: none;" th:if="${usuarioLoged.tipoUsuario}!=0"></td>
+                    <button type="submit" class="btn btn-success" th:if="${usuarioLoged.tipoUsuario}!=0">Agregar Tema</button>
+                </form>
+            </td>
+
+        </td>
+    </div>
+</header>
+
+<article class="py-4">
+    <div class="container">
+        <tr th:each="tema : ${temaList}">
+            <article id="listContainer" class="border border-primary my-1 rounded-right row" >
+                <aside class="col-3 col-xs-2 col-md-1 text-center">
+                    <td>
+                        <a th:href="@{/tema/{titulo}(titulo=${tema.titulo})}" class="fx">
+                            <i class="fa fa-arrow-circle-right fa-3x" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </aside>
+                <article class="col-9 col-xs-10 col-md-11">
+                    <td>
+                        <h4 class="p-0 m-0 h-100" th:text="${tema.titulo}">Titulo tema</h4>
+                    </td>
+                </article>
+            </article>
+        </tr>
+    </div>
+</article>
+
+<footer id="mainFooter" class="bg-primary font-color-primary eliminarSeleccion p-4 footer">
+
+    <p class="m-0">
+        Foro Temático - Metodología de Investigación II - <a class="btn-color-primary" href="http://www.mdp.utn.edu.ar/">UTN - MDP</a>
+    </p>
+
+</footer>
+
+<script src="@{/JS/Popper.js}"></script>
+<script src="@{/JS/bootstrap.js}"></script>
+<script src="@{/JS/miScript.js}"></script>
+
+</body>
+</html>
