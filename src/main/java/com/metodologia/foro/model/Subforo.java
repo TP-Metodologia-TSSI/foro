@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -22,6 +23,9 @@ public class Subforo {
 
     @Column(name = "fecha", nullable = false)
     private Date fechaCreacion;
+    
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<Usuario> moderadores;
 
     public Subforo(long id, String name, Date fechaCreacion) {
         this.id = id;
@@ -48,6 +52,28 @@ public class Subforo {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public boolean getModerador(long id) {
+    	for (Usuario u : moderadores) {
+    		if (u.getId() == id) {
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
+    
+    public void addModerador(Usuario usuario) {
+    	moderadores.add(usuario);
+    }
+    
+    public void deleteModerador(long id) {
+    	for (Usuario u : moderadores) {
+    		if (u.getId() == id) {
+    			moderadores.remove(u);
+    		}
+    	}
     }
 
     public String getFechaCreacion() {

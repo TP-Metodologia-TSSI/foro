@@ -5,8 +5,9 @@ import com.metodologia.foro.model.Subforo;
 import com.metodologia.foro.model.Tema;
 import com.metodologia.foro.persistence.SubforoRepository;
 import com.metodologia.foro.persistence.TemaRepository;
+import com.metodologia.foro.persistence.UsuarioRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -22,6 +23,9 @@ public class SubforoController {
 
     @Autowired
     private TemaRepository temaRepository;
+    
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
 
     @GetMapping(value = "/{titulo}")
@@ -74,5 +78,32 @@ public class SubforoController {
             }
         }
         return new ModelAndView("redirect:/index.html");
+    }
+
+    @DeleteMapping(value = "/delete")
+    public Object delete(Long id) {
+        Object destino = "redirect:/index.html";
+
+        if(ForoApplication.usuarioLogeado != null && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
+            Optional<Subforo> subforoOptional = this.subforoRepository.findById(id);
+            
+            if(subforoOptional.isPresent()) {
+                Subforo subforo = subforoOptional.get();
+                this.subforoRepository.delete(subforo);
+            }
+        }
+        return destino;
+    }
+    
+    @PostMapping(value = "/moderador")
+    public Object addMod(Long idUsuario, Long idSubforo){
+        Object destino = "redirect:/index.html";
+
+        if(ForoApplication.usuarioLogeado != null && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
+            if(usuarioRepository.findById(idUsuario).isPresent() && subforoRepository.findById(idSubforo).isPresent()) {
+                subforoRepository.findById(idSubforo).get().addModerador(usuarioRepository.findById(idUsuario).get());
+            }
+        }
+        return destino;
     }
 }

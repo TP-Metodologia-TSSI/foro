@@ -94,4 +94,20 @@ public class TemaController {
 
         return new ModelAndView("redirect:/index.html");
     }
+
+    @DeleteMapping(value = "/delete")
+    public Object delete(Long id) {
+        Object destino = "redirect:/index.html";
+        
+        Optional<Tema> temaOptional = this.temaRepository.findById(id);
+
+        if (temaOptional.isPresent()) {
+	        if(ForoApplication.usuarioLogeado != null && (ForoApplication.usuarioLogeado.getTipoUsuario() == 1 ||
+	        		subforoRepository.findById(temaOptional.get().getSubforo()).get().getModerador(ForoApplication.usuarioLogeado.getId()))) {
+	        	Tema tema = temaOptional.get();
+                this.temaRepository.delete(tema);
+	        }
+        }
+        return destino;
+    }
 }

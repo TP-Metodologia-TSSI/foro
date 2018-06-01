@@ -1,12 +1,17 @@
 package com.metodologia.foro.controller;
 
 import com.metodologia.foro.ForoApplication;
+import com.metodologia.foro.model.Respuesta;
+import com.metodologia.foro.model.Tema;
 import com.metodologia.foro.model.Usuario;
 import com.metodologia.foro.persistence.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
+import java.util.Optional;
 
 import javax.jws.WebParam;
 
@@ -34,11 +39,11 @@ public class UsuarioController {
 
         ModelAndView modelAndView = new ModelAndView("redirect:/usuario/login.html");
 
-        Usuario usuario = null;
+        Optional<Usuario> usuario = null;
         usuario = this.usuarioRepository.findByName(nombre);
 
-        if(usuario != null && usuario.getPassword().equals(password)) {
-            ForoApplication.usuarioLogeado = usuario;
+        if(usuario != null && usuario.get().getPassword().equals(password)) {
+            ForoApplication.usuarioLogeado = usuario.get();
             modelAndView.setViewName("redirect:/index.html");
         }
 
@@ -59,6 +64,28 @@ public class UsuarioController {
         }
 
         return modelAndView;
+    }
+    
+    @GetMapping(value = "/{nombre}")
+    public Object index(@PathVariable("nombre") String nombre){
+
+        Object destino = "redirect:/subforo/index.html";
+        Optional<Usuario> usuarioOptional = this.usuarioRepository.findByName(nombre);
+
+        if(usuarioOptional.isPresent()) {
+        	Usuario usuario = usuarioOptional.get();
+
+            Object user = "null";
+            if(ForoApplication.usuarioLogeado != null) user = ForoApplication.usuarioLogeado;
+
+            ModelAndView modelAndView = new ModelAndView("/tema/respuesta");
+            modelAndView.addObject("usuario", usuario);
+            modelAndView.addObject("usuarioLoged", user);
+
+            destino = modelAndView;
+        }
+
+        return destino;
     }
 
     @GetMapping(value = "/logout")
