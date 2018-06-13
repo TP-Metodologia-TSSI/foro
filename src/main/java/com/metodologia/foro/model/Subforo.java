@@ -24,8 +24,12 @@ public class Subforo {
     @Column(name = "fecha", nullable = false)
     private Date fechaCreacion;
     
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Usuario> moderadores;
+    
+    public Subforo() {
+    	
+    }
 
     public Subforo(long id, String name, Date fechaCreacion) {
         this.id = id;
@@ -71,6 +75,8 @@ public class Subforo {
     public void deleteModerador(long id) {
     	for (Usuario u : moderadores) {
     		if (u.getId() == id) {
+    			System.out.println("HOLA");
+    			
     			moderadores.remove(u);
     		}
     	}

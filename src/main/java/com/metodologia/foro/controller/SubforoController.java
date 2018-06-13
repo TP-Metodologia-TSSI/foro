@@ -95,13 +95,33 @@ public class SubforoController {
         return destino;
     }
     
+    @PutMapping(value = "/update")
+    public Object update(Long id, String titulo) {
+    	Object destino = "redirect:/index.html";
+        
+        System.out.println(id);
+
+        if(ForoApplication.usuarioLogeado != null && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
+            Optional<Subforo> subforoOptional = this.subforoRepository.findById(id);
+            
+            if(subforoOptional.isPresent()) {
+                Subforo subforo = subforoOptional.get();
+                subforo.setName(titulo);
+                this.subforoRepository.save(subforo);
+            }
+        }
+        return destino;
+    }
+    
     @PostMapping(value = "/moderador")
     public Object addMod(Long idUsuario, Long idSubforo){
         Object destino = "redirect:/index.html";
 
         if(ForoApplication.usuarioLogeado != null && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
             if(usuarioRepository.findById(idUsuario).isPresent() && subforoRepository.findById(idSubforo).isPresent()) {
-                subforoRepository.findById(idSubforo).get().addModerador(usuarioRepository.findById(idUsuario).get());
+                Subforo subforo = subforoRepository.findById(idSubforo).get();
+                subforo.addModerador(usuarioRepository.findById(idUsuario).get());
+                this.subforoRepository.save(subforo);
             }
         }
         return destino;

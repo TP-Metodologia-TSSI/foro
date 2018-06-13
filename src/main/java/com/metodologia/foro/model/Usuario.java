@@ -11,7 +11,6 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "usuario")
 public class Usuario {
-
     @Id
     @GeneratedValue
     @Column(name = "id", unique = true, nullable = false)
@@ -47,6 +46,10 @@ public class Usuario {
         this.urlImage = urlImage;
         this.fechaSubscripcion = new Date();
         this.tipoUsuario = 2;
+    }
+    
+    public Usuario() {
+    	
     }
 
     public long getId() {

@@ -31,6 +31,10 @@ public class Tema {
 
     @Column(name = "id_subforo", nullable = false)
     private long id_subforo;
+    
+    public Tema() {
+    	
+    }
 
     public Tema(long id_tema, String titulo, String contenido, long id_creador, Date fechaCreacion, long id_subforo) {
         this.id_tema = id_tema;

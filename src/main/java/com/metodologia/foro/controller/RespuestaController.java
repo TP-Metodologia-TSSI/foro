@@ -50,7 +50,31 @@ public class RespuestaController {
     }
 
     @DeleteMapping(value = "/delete")
-    public Object delete(Long id) {
+    public Object delete(@RequestParam ("id") Long id) {
+        Object destino = "redirect:/index.html";
+        
+        Optional<Respuesta> respuestaOptional = this.respuestaRepository.findById(id);
+
+        if(respuestaOptional.isPresent()) {
+        	Respuesta respuesta = respuestaOptional.get();
+
+	        if(ForoApplication.usuarioLogeado != null) {
+	        	Tema tema = temaRepository.findById(respuestaOptional.get().getId_tema()).get();
+	        	Subforo subforo = subforoRepository.findById(tema.getSubforo()).get();
+	        	
+	        	if (ForoApplication.usuarioLogeado.getId() == respuesta.getId_creador() ||
+	        			 (ForoApplication.usuarioLogeado.getTipoUsuario() == 1) ||
+	        			 subforo.getModerador(ForoApplication.usuarioLogeado.getId())) {
+		            this.respuestaRepository.delete(respuesta);
+	        	}
+	        }
+        }
+        
+        return destino;
+    }
+    
+    @PutMapping(value = "/update")
+    public Object update(Long id, String contenido) {
         Object destino = "redirect:/index.html";
         
         Optional<Respuesta> respuestaOptional = this.respuestaRepository.findById(id);

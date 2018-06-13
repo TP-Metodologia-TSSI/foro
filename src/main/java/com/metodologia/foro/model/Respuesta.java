@@ -28,6 +28,10 @@ public class Respuesta {
 
     @Column(name = "id_tema", unique = true, nullable = false)
     private long id_tema;
+    
+    public Respuesta() {
+    	
+    }
 
     public Respuesta(long id, String contenido, Date fechaCreacion, long id_creador, long id_tema) {
         this.id = id;
