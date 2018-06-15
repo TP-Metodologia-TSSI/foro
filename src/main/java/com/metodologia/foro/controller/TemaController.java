@@ -41,12 +41,27 @@ public class TemaController {
             List<Respuesta> respuestaList = this.respuestaRepository.findByTema(tema.getId_tema());
 
             Object user = "null";
-            if(ForoApplication.usuarioLogeado != null) user = ForoApplication.usuarioLogeado;
+            boolean isLogged = false;
+            boolean permisoBorrar = false;
+
+            if(!ForoApplication.usuarioLogeado.getName().equals("")) {
+                user = ForoApplication.usuarioLogeado;
+                isLogged = true;
+
+                if(ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
+                    permisoBorrar = true;
+
+                } else if(tema.getSubforo().getModerador(ForoApplication.usuarioLogeado.getId())){
+                    permisoBorrar = true;
+                }
+            }
 
             ModelAndView modelAndView = new ModelAndView("/tema/respuesta");
             modelAndView.addObject("tema", tema);
             modelAndView.addObject("respuestaList", respuestaList);
             modelAndView.addObject("usuarioLoged", user);
+            modelAndView.addObject("permisoBorrar", permisoBorrar);
+            modelAndView.addObject("isLogged", isLogged);
 
             destino = modelAndView;
         }
@@ -59,7 +74,7 @@ public class TemaController {
 
         Object destino = "redirect:/index.html";
 
-        if(ForoApplication.usuarioLogeado != null) {
+        if(!ForoApplication.usuarioLogeado.getName().equals("")) {
 
             Optional<Subforo> subforoOptional = this.subforoRepository.findByTitulo(nombreSubforo);
 
@@ -80,14 +95,15 @@ public class TemaController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ModelAndView add(long id_Subforo, String titulo, String contenido) {
 
-        if(ForoApplication.usuarioLogeado != null) {
+        if(!ForoApplication.usuarioLogeado.getName().equals("")) {
 
             if( id_Subforo > 0 &&
                 ForoApplication.usuarioLogeado.getId() > 0 &&
                 titulo != null && !(titulo.trim().equals("")) &&
                 contenido != null && !(contenido.trim().equals(""))) {
 
-                Tema tema = new Tema(titulo, contenido, ForoApplication.usuarioLogeado.getId(), id_Subforo);
+                Subforo subforo = this.subforoRepository.getOne(id_Subforo);
+                Tema tema = new Tema(titulo, contenido, ForoApplication.usuarioLogeado, subforo);
                 this.temaRepository.save(tema);
             }
         }
@@ -102,8 +118,8 @@ public class TemaController {
         Optional<Tema> temaOptional = this.temaRepository.findById(id);
 
         if (temaOptional.isPresent()) {
-	        if(ForoApplication.usuarioLogeado != null && (ForoApplication.usuarioLogeado.getTipoUsuario() == 1 ||
-	        		subforoRepository.findById(temaOptional.get().getSubforo()).get().getModerador(ForoApplication.usuarioLogeado.getId()))) {
+	        if(!ForoApplication.usuarioLogeado.getName().equals("") && (ForoApplication.usuarioLogeado.getTipoUsuario() == 1 ||
+	        		subforoRepository.findById(temaOptional.get().getSubforo().getId()).get().getModerador(ForoApplication.usuarioLogeado.getId()))) {
 	        	Tema tema = temaOptional.get();
                 this.temaRepository.delete(tema);
 	        }

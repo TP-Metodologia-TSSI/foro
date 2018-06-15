@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,12 +26,36 @@ public class UsuarioController {
     @GetMapping(value = "/login.html")
     public ModelAndView loginView() {
         ModelAndView modelAndView = new ModelAndView("/usuario/login");
+
+        Object user = "null";
+        boolean isLogged = false;
+
+        if(!ForoApplication.usuarioLogeado.getName().equals("")) {
+            user = ForoApplication.usuarioLogeado;
+            isLogged = true;
+        }
+
+        modelAndView.addObject("usuarioLoged", user);
+        modelAndView.addObject("isLogged", isLogged);
+
         return modelAndView;
     }
 
     @GetMapping(value = "/register.html")
     public ModelAndView registerView() {
         ModelAndView modelAndView = new ModelAndView("/usuario/register");
+
+        Object user = "null";
+        boolean isLogged = false;
+
+        if(!ForoApplication.usuarioLogeado.getName().equals("")) {
+            user = ForoApplication.usuarioLogeado;
+            isLogged = true;
+        }
+
+        modelAndView.addObject("usuarioLoged", user);
+        modelAndView.addObject("isLogged", isLogged);
+
         return modelAndView;
     }
 
@@ -76,11 +101,17 @@ public class UsuarioController {
         	Usuario usuario = usuarioOptional.get();
 
             Object user = "null";
-            if(ForoApplication.usuarioLogeado != null) user = ForoApplication.usuarioLogeado;
+            boolean isLogged = false;
 
-            ModelAndView modelAndView = new ModelAndView("/tema/respuesta");
+            if(!ForoApplication.usuarioLogeado.getName().equals("")) {
+                user = ForoApplication.usuarioLogeado;
+                isLogged = true;
+            }
+
+            ModelAndView modelAndView = new ModelAndView("/usuario/perfil");
             modelAndView.addObject("usuario", usuario);
             modelAndView.addObject("usuarioLoged", user);
+            modelAndView.addObject("isLogged", isLogged);
 
             destino = modelAndView;
         }
@@ -90,11 +121,7 @@ public class UsuarioController {
 
     @GetMapping(value = "/logout")
     public ModelAndView logout() {
-
-        if(ForoApplication.usuarioLogeado != null) {
-            ForoApplication.usuarioLogeado = null;
-        }
-
+        ForoApplication.usuarioLogeado = new Usuario(59000, "", "", "", new Date(), 0);
         return new ModelAndView("redirect:/index.html");
     }
 }

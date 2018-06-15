@@ -26,31 +26,29 @@ public class Tema {
     @Column(name = "fecha", nullable = false)
     private Date fechaCreacion;
 
-    @Column(name = "id_usuario", nullable = false)
-    private long id_creador;
+    @JoinColumn(name = "id_usuario", unique = true, nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Usuario creador;
 
-    @Column(name = "id_subforo", nullable = false)
-    private long id_subforo;
-    
-    public Tema() {
-    	
-    }
+    @JoinColumn(name = "id_subforo", unique = true, nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Subforo subforo;
 
-    public Tema(long id_tema, String titulo, String contenido, long id_creador, Date fechaCreacion, long id_subforo) {
+    public Tema(long id_tema, String titulo, String contenido, Usuario creador, Date fechaCreacion, Subforo subforo) {
         this.id_tema = id_tema;
         this.titulo = titulo;
         this.contenido = contenido;
-        this.id_creador = id_creador;
+        this.creador = creador;
         this.fechaCreacion = fechaCreacion;
-        this.id_subforo = id_subforo;
+        this.subforo = subforo;
     }
 
-    public Tema(String titulo, String contenido, long id_creador, long id_subforo) {
+    public Tema(String titulo, String contenido, Usuario creador, Subforo subforo) {
         this.titulo = titulo;
         this.contenido = contenido;
-        this.id_creador = id_creador;
+        this.creador = creador;
         this.fechaCreacion = new Date();
-        this.id_subforo = id_subforo;
+        this.subforo = subforo;
     }
 
     public long getId_tema() {
@@ -77,12 +75,12 @@ public class Tema {
         this.contenido = contenido;
     }
 
-    public long getCreador() {
-        return id_creador;
+    public Usuario getCreador() {
+        return creador;
     }
 
-    public void setCreador(long id_creador) {
-        this.id_creador = id_creador;
+    public void setCreador(Usuario creador) {
+        this.creador = creador;
     }
 
     public String getFechaCreacion() {
@@ -94,11 +92,11 @@ public class Tema {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public long getSubforo() {
-        return id_subforo;
+    public Subforo getSubforo() {
+        return subforo;
     }
 
-    public void setSubforo(long id_subforo) {
-        this.id_subforo = id_subforo;
+    public void setSubforo(Subforo subforo) {
+        this.subforo = subforo;
     }
 }

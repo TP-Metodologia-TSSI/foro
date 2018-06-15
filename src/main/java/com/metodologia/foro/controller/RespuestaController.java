@@ -39,7 +39,7 @@ public class RespuestaController {
         Optional<Tema> temaOptional = null;
         Tema tema = null;
 
-        if(ForoApplication.usuarioLogeado != null) {
+        if(!ForoApplication.usuarioLogeado.getName().equals("")) {
 
             if( Long.parseLong(id_tema) > 0 &&
                 contenido != null && !(contenido.trim().equals(""))) {
@@ -57,27 +57,25 @@ public class RespuestaController {
     }
 
     @DeleteMapping(value = "/delete")
-    public Object delete(@RequestParam ("id") Long id) {
-        Object destino = "redirect:/index.html";
-        
+    public ModelAndView delete(@RequestParam ("id") Long id) {
         Optional<Respuesta> respuestaOptional = this.respuestaRepository.findById(id);
 
         if(respuestaOptional.isPresent()) {
         	Respuesta respuesta = respuestaOptional.get();
 
-	        if(ForoApplication.usuarioLogeado != null) {
+	        if(!ForoApplication.usuarioLogeado.getName().equals("")) {
 	        	Tema tema = temaRepository.findById(respuestaOptional.get().getId_tema()).get();
-	        	Subforo subforo = subforoRepository.findById(tema.getSubforo()).get();
+	        	Subforo subforo = tema.getSubforo();
 	        	
-	        	if (ForoApplication.usuarioLogeado.getId() == respuesta.getId_creador() ||
+	        	if (ForoApplication.usuarioLogeado.getId() == respuesta.getCreador().getId() ||
 	        			 (ForoApplication.usuarioLogeado.getTipoUsuario() == 1) ||
 	        			 subforo.getModerador(ForoApplication.usuarioLogeado.getId())) {
 		            this.respuestaRepository.delete(respuesta);
 	        	}
 	        }
         }
-        
-        return destino;
+
+        return new ModelAndView("redirect:/index.html");
     }
     
     @PutMapping(value = "/update")
@@ -89,11 +87,11 @@ public class RespuestaController {
         if(respuestaOptional.isPresent()) {
         	Respuesta respuesta = respuestaOptional.get();
 
-	        if(ForoApplication.usuarioLogeado != null) {
+	        if(!ForoApplication.usuarioLogeado.getName().equals("")) {
 	        	Tema tema = temaRepository.findById(respuestaOptional.get().getId_tema()).get();
-	        	Subforo subforo = subforoRepository.findById(tema.getSubforo()).get();
+	        	Subforo subforo = tema.getSubforo();
 	        	
-	        	if (ForoApplication.usuarioLogeado.getId() == respuesta.getId_creador() ||
+	        	if (ForoApplication.usuarioLogeado.getId() == respuesta.getCreador().getId() ||
 	        			 (ForoApplication.usuarioLogeado.getTipoUsuario() == 1) ||
 	        			 subforo.getModerador(ForoApplication.usuarioLogeado.getId())) {
 		            this.respuestaRepository.delete(respuesta);
@@ -118,19 +116,25 @@ public class RespuestaController {
 
         	elements[0] = r.getContenido().toLowerCase();
         	elements[0] = temaRepository.findById(r.getId_tema()).get().getTitulo().toLowerCase();
-        	elements[0] = usuarioRepository.findById(r.getId_creador()).get().getName().toLowerCase();
+        	elements[0] = usuarioRepository.findById(r.getCreador().getId()).get().getName().toLowerCase();
         	
     		if (wordsExist(words, elements)) {
     			respuestas.add(r);
 	        }
 	
 	        Object user = "null";
-	        if(ForoApplication.usuarioLogeado != null) user = ForoApplication.usuarioLogeado;
-	
-	        ModelAndView modelAndView = new ModelAndView("/tema/index");
+            boolean isLogged = false;
+
+            if(!ForoApplication.usuarioLogeado.getName().equals("")) {
+                user = ForoApplication.usuarioLogeado;
+                isLogged = true;
+            }
+
+            ModelAndView modelAndView = new ModelAndView("/tema/index");
 	        modelAndView.addObject("respuestas", respuestas);
 	        modelAndView.addObject("busqueda", myString);
-	        modelAndView.addObject("usuarioLogged", user);
+            modelAndView.addObject("usuarioLogged", user);
+            modelAndView.addObject("isLogged", isLogged);
 
             destino = modelAndView;
         }

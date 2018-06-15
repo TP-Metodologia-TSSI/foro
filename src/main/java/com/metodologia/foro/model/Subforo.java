@@ -1,6 +1,7 @@
 package com.metodologia.foro.model;
 
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.text.DateFormat;
@@ -24,12 +25,11 @@ public class Subforo {
     @Column(name = "fecha", nullable = false)
     private Date fechaCreacion;
     
-    @ManyToMany(mappedBy="subforo_moderador")
+    @ManyToMany
+    @JoinTable(name = "subforo_moderador", joinColumns = {
+            @JoinColumn(name = "id_subforo", referencedColumnName = "ID") }, inverseJoinColumns = {
+            @JoinColumn(name = "id_usuario", referencedColumnName = "ID") })
     private List<Usuario> moderadores;
-    
-    public Subforo() {
-    	
-    }
 
     public Subforo(long id, String name, Date fechaCreacion) {
         this.id = id;

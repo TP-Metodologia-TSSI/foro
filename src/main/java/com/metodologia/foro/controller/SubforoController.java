@@ -40,12 +40,27 @@ public class SubforoController {
             List<Tema> temaList = this.temaRepository.findBySubforo(subforo.getId());
 
             Object user = "null";
-            if(ForoApplication.usuarioLogeado != null) user = ForoApplication.usuarioLogeado;
+            boolean isLogged = false;
+            boolean permisoBorrar = false;
+
+            if(!ForoApplication.usuarioLogeado.getName().equals("")) {
+                user = ForoApplication.usuarioLogeado;
+                isLogged = true;
+
+                if(ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
+                    permisoBorrar = true;
+
+                } else if(subforo.getModerador(ForoApplication.usuarioLogeado.getId())){
+                    permisoBorrar = true;
+                }
+            }
 
             ModelAndView modelAndView = new ModelAndView("/tema/index");
             modelAndView.addObject("temaList", temaList);
             modelAndView.addObject("tituloSubforo", titulo);
             modelAndView.addObject("usuarioLoged", user);
+            modelAndView.addObject("permisoBorrar", permisoBorrar);
+            modelAndView.addObject("isLogged", isLogged);
 
             destino = modelAndView;
         }
@@ -57,7 +72,7 @@ public class SubforoController {
     public Object addView() {
         Object destino = "redirect:/index.html";
 
-        if(ForoApplication.usuarioLogeado != null && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
+        if(!ForoApplication.usuarioLogeado.getName().equals("") && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
             ModelAndView modelAndView = new ModelAndView("/subforo/index");
             modelAndView.setViewName("/subforo/alta");
 
@@ -70,7 +85,7 @@ public class SubforoController {
     @PostMapping(value = "/add")
     public ModelAndView add(String titulo){
 
-        if(ForoApplication.usuarioLogeado != null && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
+        if(!ForoApplication.usuarioLogeado.getName().equals("") && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
 
             if(titulo != null && !(titulo.trim().equals(""))) {
                 Subforo subforo = new Subforo(titulo);
@@ -84,7 +99,7 @@ public class SubforoController {
     public Object delete(Long id) {
         Object destino = "redirect:/index.html";
 
-        if(ForoApplication.usuarioLogeado != null && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
+        if(!ForoApplication.usuarioLogeado.getName().equals("") && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
             Optional<Subforo> subforoOptional = this.subforoRepository.findById(id);
             
             if(subforoOptional.isPresent()) {
@@ -101,7 +116,7 @@ public class SubforoController {
         
         System.out.println(id);
 
-        if(ForoApplication.usuarioLogeado != null && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
+        if(!ForoApplication.usuarioLogeado.getName().equals("") && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
             Optional<Subforo> subforoOptional = this.subforoRepository.findById(id);
             
             if(subforoOptional.isPresent()) {
@@ -117,7 +132,7 @@ public class SubforoController {
     public Object addMod(Long idUsuario, Long idSubforo){
         Object destino = "redirect:/index.html";
 
-        if(ForoApplication.usuarioLogeado != null && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
+        if(!ForoApplication.usuarioLogeado.getName().equals("") && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
             if(usuarioRepository.findById(idUsuario).isPresent() && subforoRepository.findById(idSubforo).isPresent()) {
                 Subforo subforo = subforoRepository.findById(idSubforo).get();
                 subforo.addModerador(usuarioRepository.findById(idUsuario).get());

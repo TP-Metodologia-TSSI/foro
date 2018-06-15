@@ -47,10 +47,6 @@ public class Usuario {
         this.fechaSubscripcion = new Date();
         this.tipoUsuario = 2;
     }
-    
-    public Usuario() {
-    	
-    }
 
     public long getId() {
         return id;

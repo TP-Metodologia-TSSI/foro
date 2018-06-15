@@ -22,7 +22,7 @@ public class ForoApplication {
 	@Autowired
 	private SubforoRepository subforoRepository;
 
-	public static Usuario usuarioLogeado = new Usuario(100, "", "", "", new Date(), 0);
+	public static Usuario usuarioLogeado = new Usuario(59000, "", "", "", new Date(), 0);
 
 	public static void main(String[] args) {
 		SpringApplication.run(ForoApplication.class, args);
@@ -31,14 +31,20 @@ public class ForoApplication {
 	@GetMapping(value = "/index.html")
 	public ModelAndView index(){
 		Object user = "null";
-		if(usuarioLogeado != null) user = usuarioLogeado;
+		boolean isLogged = false;
+
+		if(!usuarioLogeado.getName().equals("")) {
+			user = usuarioLogeado;
+			isLogged = true;
+		}
 
 		List<Subforo> subforoList = this.subforoRepository.findAll();
 
 		ModelAndView modelAndView = new ModelAndView("/subforo/index");
 		modelAndView.addObject("subforoList", subforoList);
 		modelAndView.addObject("usuarioLoged", user);
-
+		modelAndView.addObject("isLogged", isLogged);
+		System.out.println(isLogged);
 		return modelAndView;
 	}
 }

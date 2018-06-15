@@ -7,6 +7,7 @@
 
 	<link rel="stylesheet" type="text/css" th:href="@{/CSS/bootstrap.css}">
 	<link rel="stylesheet" type="text/css" th:href="@{/CSS/styles.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/CSS/stylesPerfil.css}">
 	<link rel="stylesheet" type="text/css" th:href="@{/CSS/font-awesome.css}">
 
 	<script th:src="@{/JS/JQuery.js}"></script>
@@ -41,42 +42,26 @@
 		</form>
 	</nav>
 
-	<td>
-		<div th:if="${usuarioLoged != 'null'}" class="text-center pt-4">
-			<div th:if="${usuarioLoged.tipoUsuario==1}">
-				<a href="/subforo/add.html" class="btn btn-success">Agregar Subforo</a>
-			</div>
-		</div>
-	</td>
+	<div id="perfilUsuario" class="card my-3 py-2">
+		<i class="fa fa-user-circle-o fa-5x" aria-hidden="true"></i>
+		<td>
+			<h1 th:text="${usuario.name}">Usuario nombre</h1>
+			<th:block th:switch="${usuario.tipoUsuario}">
+				<p th:case="1"><span class="text-danger">Administrador</span></p>
+				<p th:case="2">Usuario</p>
+			</th:block>
+			<p>Creó su cuenta el día: <span th:text="${usuario.fechaSubscripcion}"></span></p>
+		</td>
 
-	<article class="py-4">
-		<div class="container">
-			<tr th:each="subforo : ${subforoList}">
-				<article id="listContainer" class="border border-primary my-1 rounded-right row" >
-					<aside class="col-3 col-xs-2 col-md-1 text-center">
-						<td>
-							<a th:href="@{/subforo/{name}(name=${subforo.name})}" class="fx">
-								<i class="fa fa-arrow-circle-right fa-3x" aria-hidden="true"></i>
-							</a>
-						</td>
-					</aside>
-
-					<article class="col-9 col-xs-10 col-md-11">
-						<td>
-							<form action="/subforo/delete" method="DELETE">
-								<input type="text" name="id" th:value="${subforo.id}" style="display: none;">
-								<h4 th:text="${subforo.name}" style="margin-top: 5px;">
-									Titulo subforo
-									<td><button type="submit" class="btn btn-danger pull-right" th:if="${usuarioLoged != 'null' && usuarioLoged.tipoUsuario==1}">Eliminar</button></td>
-								</h4>
-							</form>
-						</td>
-					</article>
-				</article>
-			</tr>
-		</div>
-	</article>
-
+		<ul class="list-inline">
+			<li class="list-inline-item"><a href="#"><i class="fa fa-twitter"></i></a></li>
+			<li class="list-inline-item"><a href="#"><i class="fa fa-linkedin"></i></a></li>
+			<li class="list-inline-item"><a href="#"><i class="fa fa-facebook"></i></a></li>
+		</ul>
+				
+				
+				
+	</div> 
 
 	<footer id="mainFooter" class="bg-primary font-color-primary eliminarSeleccion p-4 footer">
 
@@ -86,9 +71,9 @@
 
 	</footer>
 
-	<script src="@{/JS/Popper.js}"></script>
-	<script src="@{/JS/bootstrap.js}"></script>
-	<script src="@{/JS/miScript.js}"></script>
+<script src="@{/JS/Popper.js}"></script>
+<script src="@{/JS/bootstrap.js}"></script>
+<script src="@{/JS/miScript.js}"></script>
 
 </body>
 </html>

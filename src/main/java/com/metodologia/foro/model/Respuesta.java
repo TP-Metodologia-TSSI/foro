@@ -1,6 +1,8 @@
 package com.metodologia.foro.model;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.text.DateFormat;
@@ -23,15 +25,12 @@ public class Respuesta {
     @Column(name = "fecha", nullable = false)
     private Date fechaCreacion;
 
-    @Column(name = "id_usuario", unique = true, nullable = false)
+    @JoinColumn(name = "id_usuario", unique = true, nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Usuario creador;
 
     @Column(name = "id_tema", unique = true, nullable = false)
     private long id_tema;
-    
-    public Respuesta() {
-    	
-    }
 
     public Respuesta(long id, String contenido, Date fechaCreacion, Usuario creador, long id_tema) {
         this.id = id;
@@ -52,8 +51,8 @@ public class Respuesta {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setUsuario(Usuario usuario) {
+        this.creador = usuario;
     }
 
     public String getContenido() {
@@ -73,8 +72,8 @@ public class Respuesta {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public long getId_creador() {
-        return creador.getId();
+    public Usuario getCreador() {
+        return creador;
     }
 
     public long getId_tema() {
