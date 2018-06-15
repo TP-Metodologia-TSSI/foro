@@ -24,7 +24,7 @@ public class Subforo {
     @Column(name = "fecha", nullable = false)
     private Date fechaCreacion;
     
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy="subforo_moderador")
     private List<Usuario> moderadores;
     
     public Subforo() {

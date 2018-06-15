@@ -24,7 +24,7 @@ public class Respuesta {
     private Date fechaCreacion;
 
     @Column(name = "id_usuario", unique = true, nullable = false)
-    private long id_creador;
+    private Usuario creador;
 
     @Column(name = "id_tema", unique = true, nullable = false)
     private long id_tema;
@@ -33,18 +33,18 @@ public class Respuesta {
     	
     }
 
-    public Respuesta(long id, String contenido, Date fechaCreacion, long id_creador, long id_tema) {
+    public Respuesta(long id, String contenido, Date fechaCreacion, Usuario creador, long id_tema) {
         this.id = id;
         this.contenido = contenido;
         this.fechaCreacion = fechaCreacion;
-        this.id_creador = id_creador;
+        this.creador = creador;
         this.id_tema = id_tema;
     }
 
-    public Respuesta(String contenido, long id_creador, long id_tema) {
+    public Respuesta(String contenido, Usuario creador, long id_tema) {
         this.contenido = contenido;
         this.fechaCreacion = new Date();
-        this.id_creador = id_creador;
+        this.creador = creador;
         this.id_tema = id_tema;
     }
 
@@ -74,11 +74,7 @@ public class Respuesta {
     }
 
     public long getId_creador() {
-        return id_creador;
-    }
-
-    public void setId_creador(long id_creador) {
-        this.id_creador = id_creador;
+        return creador.getId();
     }
 
     public long getId_tema() {
