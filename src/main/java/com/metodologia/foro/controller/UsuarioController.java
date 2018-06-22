@@ -6,6 +6,7 @@ import com.metodologia.foro.model.Tema;
 import com.metodologia.foro.model.Usuario;
 import com.metodologia.foro.persistence.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -77,7 +78,6 @@ public class UsuarioController {
 
     @PostMapping(value = "/register")
     public ModelAndView register(String name, String email, String password) {
-
         ModelAndView modelAndView = new ModelAndView("redirect:/usuario/register.html");
 
         if( name != null && !(name.trim().equals("")) &&
@@ -86,6 +86,11 @@ public class UsuarioController {
             Usuario usuario = new Usuario(name, password,"");
             this.usuarioRepository.save(usuario);
             modelAndView.setViewName("redirect:/usuario/login.html");
+            modelAndView.setStatus(HttpStatus.OK);
+            modelAndView.addObject("nuevoUsuario", usuario);
+        }
+        else {
+            modelAndView.setStatus(HttpStatus.NO_CONTENT);
         }
 
         return modelAndView;
