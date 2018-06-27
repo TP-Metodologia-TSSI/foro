@@ -18,6 +18,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.metodologia.foro.controller.SubforoController;
+import com.metodologia.foro.controller.UsuarioController;
+import com.metodologia.foro.model.Subforo;
 import com.metodologia.foro.model.Usuario;
 import com.metodologia.foro.persistence.SubforoRepository;
 import com.metodologia.foro.persistence.UsuarioRepository;
@@ -32,6 +34,7 @@ public class SubforoControllerTest {
 
     @InjectMocks
     SubforoController controller;
+    UsuarioController uController;
 
     ModelAndView modelAndView;
     HttpServletRequest request;
@@ -51,9 +54,12 @@ public class SubforoControllerTest {
 
     @Test
     public void insertOkTest() {
-		long id = 1;
+		uController.login("admin", "1234");
 		ModelAndView modelAndView = this.controller.add("NewSub");
-
+		
+		Subforo subforo = (Subforo) modelAndView.getModel().get("subforo");
+		
+		assertEquals(subforo.getName(), "NewSub");
 		assertEquals(modelAndView.getViewName() == "redirect:/index.html", true);
     }
 }

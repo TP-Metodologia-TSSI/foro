@@ -85,13 +85,16 @@ public class SubforoController {
     @PostMapping(value = "/add")
     public ModelAndView add(String titulo){
 
+        ModelAndView modelAndView = new ModelAndView("redirect:/index.html");
         if(!ForoApplication.usuarioLogeado.getName().equals("") && ForoApplication.usuarioLogeado.getTipoUsuario() == 1) {
 
             if(titulo != null && !(titulo.trim().equals(""))) {
                 Subforo subforo = new Subforo(titulo);
                 this.subforoRepository.save(subforo);
+                modelAndView.addObject("subforo", subforo);
             }
         }
+        
         return new ModelAndView("redirect:/index.html");
     }
 
